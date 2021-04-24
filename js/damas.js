@@ -159,12 +159,12 @@ function dibujarFicha(f, c, color, num) {
     switch (color) {
         case "rojo":
             document.getElementById(celda).innerHTML +=
-            '<div id="' + num + '" style="height:100%; width:100%"> <img src="/img/rojo.png" alt="ficha roja" style= "margin-left:10%; margin-top:10%;" onclick="clickFichaRoja(' + num + ')"></div>';
+            '<div id="' + num + '" style="height:100%; width:100%"> <img src="img/rojo.png" alt="ficha roja" style= "margin-left:10%; margin-top:10%;" onclick="clickFichaRoja(' + num + ')"></div>';
             break;
 
         case "azul":
             document.getElementById(celda).innerHTML +=
-            '<div id="' + num + '" style="height:100%; width:100%"> <img src="/img/azul.png" alt="ficha azul" style= "margin-left:10%; margin-top:10%;" onclick="clickFichaAzul(' + num + ')"></div>';
+            '<div id="' + num + '" style="height:100%; width:100%"> <img src="img/azul.png" alt="ficha azul" style= "margin-left:10%; margin-top:10%;" onclick="clickFichaAzul(' + num + ')"></div>';
             break;
     }
 }
