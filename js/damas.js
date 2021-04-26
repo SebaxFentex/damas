@@ -52,6 +52,12 @@ function casillaEstaDisponible(casilla){
     
 }
 
+function intentarMovimiento(casilla){
+    if(document.getElementById(casilla).style.background == "green"){
+        moverFicha(fichaSeleccionada,casilla.toString().substr(0,1), casilla.toString().substr(1,1));
+    }
+}
+
 function clickFichaRoja(idFicha){
     repintarTablero();
     var id = idFicha.id;
@@ -62,10 +68,23 @@ function clickFichaRoja(idFicha){
 
     var movDer = ((parseInt(f) + 1).toString() + ((parseInt(c) + 1)).toString());
     var movIzq = ((parseInt(f) + 1).toString() + ((parseInt(c) - 1)).toString());
+
+    var movDobleDer = ((parseInt(f) + 2).toString() + ((parseInt(c) + 2)).toString());
+    var movDobleIzq = ((parseInt(f) + 2).toString() + ((parseInt(c) - 2)).toString());
+
+    f = parseInt(f);
+    c = parseInt(c);
+
+
     if(f < 7){
         if(c == 0){
             if(casillaEstaDisponible(movDer)){
                 document.getElementById(movDer).style.background = "green";
+            }
+            else if(tablero[f+1][c+1].substr(0,1) == "a"){
+                if(casillaEstaDisponible(movDobleDer)){
+                    document.getElementById(movDobleDer).style.background = "green";
+                }
             }
             
         }
@@ -73,24 +92,34 @@ function clickFichaRoja(idFicha){
             if(casillaEstaDisponible(movIzq)){
                 document.getElementById(movIzq).style.background = "green";
             }
+            else if(tablero[f+1][c-1].substr(0,1) == "a"){
+                if(casillaEstaDisponible(movDobleIzq)){
+                document.getElementById(movDobleIzq).style.background = "green";
+                }
+            }
         }
         else{
             if(casillaEstaDisponible(movDer)){
                 document.getElementById(movDer).style.background = "green";
             }
+            else if(tablero[f+1][c+1].substr(0,1) == "a"){
+                if(casillaEstaDisponible(movDobleDer)){
+                    document.getElementById(movDobleDer).style.background = "green";
+                }
+            }
+
             if(casillaEstaDisponible(movIzq)){
                 document.getElementById(movIzq).style.background = "green";
+            }
+            else if(tablero[f+1][c-1].substr(0,1) == "a"){
+                if(casillaEstaDisponible(movDobleIzq)){
+                document.getElementById(movDobleIzq).style.background = "green";
+                }
             }
         }
     }
 }
 
-function intentarMovimiento(casilla){
-    if(document.getElementById(casilla).style.background == "green"){
-        moverFicha(fichaSeleccionada,casilla.toString().substr(0,1), casilla.toString().substr(1,1));
-        
-    }
-}
 
 function clickFichaAzul(idFicha){
     repintarTablero();
@@ -103,23 +132,50 @@ function clickFichaAzul(idFicha){
     var movDer = ((parseInt(f) - 1).toString() + ((parseInt(c) + 1)).toString());
     var movIzq = ((parseInt(f) - 1).toString() + ((parseInt(c) - 1)).toString());
 
+    var movDobleDer = ((parseInt(f) - 2).toString() + ((parseInt(c) + 2)).toString());
+    var movDobleIzq = ((parseInt(f) - 2).toString() + ((parseInt(c) - 2)).toString());
+
+    f = parseInt(f);
+    c = parseInt(c);
+
     if(f > 1){
         if(c == 0){
             if(casillaEstaDisponible(movDer)){
                 document.getElementById(movDer).style.background = "green";
+            }
+            else if(tablero[f-1][c+1].substr(0,1) == "r"){
+                if(casillaEstaDisponible(movDobleDer)){
+                    document.getElementById(movDobleDer).style.background = "green";
+                }
             }
         }
         else if(c == 7){
             if(casillaEstaDisponible(movIzq)){
                 document.getElementById(movIzq).style.background = "green";
             }
+            else if(tablero[f-1][c-1].substr(0,1) == "r"){
+                if(casillaEstaDisponible(movDobleIzq)){
+                document.getElementById(movDobleIzq).style.background = "green";
+                }
+            }
         }
         else{
             if(casillaEstaDisponible(movDer)){
                 document.getElementById(movDer).style.background = "green";
             }
+            else if(tablero[f-1][c+1].substr(0,1) == "r"){
+                if(casillaEstaDisponible(movDobleDer)){
+                    document.getElementById(movDobleDer).style.background = "green";
+                }
+            }
+
             if(casillaEstaDisponible(movIzq)){
                 document.getElementById(movIzq).style.background = "green";
+            }
+            else if(tablero[f-1][c-1].substr(0,1) == "r"){
+                if(casillaEstaDisponible(movDobleIzq)){
+                document.getElementById(movDobleIzq).style.background = "green";
+                }
             }
         }
     }
@@ -187,6 +243,8 @@ function moverFicha(idFicha, f, c){
     dibujarFicha(f, c, color, idFicha);
     tablero[f][c] = idFicha;
     repintarTablero();
+
+    console.log("Ficha " + idFicha + " movida desde [" + fvieja + "," + cvieja + "] hasta [" + f + "," + c + "].");
 }
 
 function dibujarTablero() {
@@ -198,7 +256,6 @@ function dibujarTablero() {
     for (var i = 0; i < 8; i++) {
         
         document.getElementById("tbody").innerHTML += '<tr id="fila' + (i.toString()) + '"></tr>';
-        console.log(document.getElementById("fila0"));
 
         for (var j = 0; j < 8; j++) {
 
@@ -206,7 +263,6 @@ function dibujarTablero() {
 
             if ((i + j) % 2 == 0) {
 
-                console.log(("fila" + i.toString()));
                 document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaBlanca" onclick="intentarMovimiento(' + casilla + ')"></td>';
 
             }
