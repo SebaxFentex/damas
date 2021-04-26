@@ -193,7 +193,12 @@ function dibujarTablero() {
 
     var casilla = '';
 
+    document.getElementById("Ajedrez").innerHTML += '<tbody id="tbody"></tbody>';
+
     for (var i = 0; i < 8; i++) {
+        
+        document.getElementById("tbody").innerHTML += '<tr id="fila' + (i.toString()) + '"></tr>';
+        console.log(document.getElementById("fila0"));
 
         for (var j = 0; j < 8; j++) {
 
@@ -201,12 +206,13 @@ function dibujarTablero() {
 
             if ((i + j) % 2 == 0) {
 
-                document.getElementById("Ajedrez").innerHTML += '<div id="' + casilla + '" class = "casillaBlanca" onclick="intentarMovimiento(' + casilla + ')"></div>';
+                console.log(("fila" + i.toString()));
+                document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaBlanca" onclick="intentarMovimiento(' + casilla + ')"></td>';
 
             }
             else {
 
-                document.getElementById("Ajedrez").innerHTML += '<div id="' + casilla + '" class = "casillaNegra" onclick="intentarMovimiento(' + casilla + ')"></div>';
+                document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaNegra" onclick="intentarMovimiento(' + casilla + ')"></td>';
 
             }
         }
