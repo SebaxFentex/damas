@@ -13,7 +13,12 @@ img{
     padding: 0px;
 }
 
-.ficha{
+.fichaRoja{
+    height:100%;
+    width:100%;
+}
+
+.fichaAzul{
     height:100%;
     width:100%;
 }

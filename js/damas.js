@@ -30,7 +30,7 @@ function llenarMatriz() {
     console.log(tablero);
 }
 
-function posicion(idFicha){
+function posicion(idFicha) {
     for (let f = 0; f < 8; f++) {
         for (let c = 0; c < 8; c++) {
             if (tablero[f][c] == idFicha) {
@@ -40,151 +40,112 @@ function posicion(idFicha){
     }
 }
 
-function casillaEstaDisponible(casilla){
-    var f = casilla.substr(0,1);
-    var c = casilla.substr(1,1);
-    if((tablero[f][c]) == undefined){
+function casillaEstaDisponible(casilla) {
+    var f = casilla.substr(0, 1);
+    var c = casilla.substr(1, 1);
+    if ((tablero[f][c]) == undefined && (c >= 0 && c < 8)) {
         return true;
     }
-    else{
+    else {
         return false;
     }
-    
+
 }
 
-function intentarMovimiento(casilla){
-    if(document.getElementById(casilla).style.background == "green"){
-        moverFicha(fichaSeleccionada,casilla.toString().substr(0,1), casilla.toString().substr(1,1));
+function intentarMovimiento(casilla) {
+    if (document.getElementById(casilla).style.background == "green") {
+        moverFicha(fichaSeleccionada, casilla.toString().substr(0, 1), casilla.toString().substr(1, 1));
     }
 }
 
-function clickFichaRoja(idFicha){
+function clickFicha(idFicha) {
+
     repintarTablero();
+
     var id = idFicha.id;
     fichaSeleccionada = id;
     var pos = posicion(id);
-    var f = pos.substr(0,1);
-    var c = pos.substr(1,1);
 
-    var movDer = ((parseInt(f) + 1).toString() + ((parseInt(c) + 1)).toString());
-    var movIzq = ((parseInt(f) + 1).toString() + ((parseInt(c) - 1)).toString());
-
-    var movDobleDer = ((parseInt(f) + 2).toString() + ((parseInt(c) + 2)).toString());
-    var movDobleIzq = ((parseInt(f) + 2).toString() + ((parseInt(c) - 2)).toString());
+    var f = pos.substr(0, 1);
+    var c = pos.substr(1, 1);
 
     f = parseInt(f);
     c = parseInt(c);
-
-
-    if(f < 7){
-        if(c == 0){
-            if(casillaEstaDisponible(movDer)){
-                document.getElementById(movDer).style.background = "green";
-            }
-            else if(tablero[f+1][c+1].substr(0,1) == "a"){
-                if(casillaEstaDisponible(movDobleDer)){
-                    document.getElementById(movDobleDer).style.background = "green";
-                }
-            }
-            
-        }
-        else if(c == 7){
-            if(casillaEstaDisponible(movIzq)){
-                document.getElementById(movIzq).style.background = "green";
-            }
-            else if(tablero[f+1][c-1].substr(0,1) == "a"){
-                if(casillaEstaDisponible(movDobleIzq)){
-                document.getElementById(movDobleIzq).style.background = "green";
-                }
-            }
-        }
-        else{
-            if(casillaEstaDisponible(movDer)){
-                document.getElementById(movDer).style.background = "green";
-            }
-            else if(tablero[f+1][c+1].substr(0,1) == "a"){
-                if(casillaEstaDisponible(movDobleDer)){
-                    document.getElementById(movDobleDer).style.background = "green";
-                }
-            }
-
-            if(casillaEstaDisponible(movIzq)){
-                document.getElementById(movIzq).style.background = "green";
-            }
-            else if(tablero[f+1][c-1].substr(0,1) == "a"){
-                if(casillaEstaDisponible(movDobleIzq)){
-                document.getElementById(movDobleIzq).style.background = "green";
-                }
-            }
-        }
-    }
-}
-
-
-function clickFichaAzul(idFicha){
-    repintarTablero();
-    var id = idFicha.id;
-    fichaSeleccionada = id;
-    var pos = posicion(id);
-    var f = pos.substr(0,1);
-    var c = pos.substr(1,1);
-
-    var movDer = ((parseInt(f) - 1).toString() + ((parseInt(c) + 1)).toString());
-    var movIzq = ((parseInt(f) - 1).toString() + ((parseInt(c) - 1)).toString());
-
-    var movDobleDer = ((parseInt(f) - 2).toString() + ((parseInt(c) + 2)).toString());
-    var movDobleIzq = ((parseInt(f) - 2).toString() + ((parseInt(c) - 2)).toString());
-
-    f = parseInt(f);
-    c = parseInt(c);
-
-    if(f > 1){
-        if(c == 0){
-            if(casillaEstaDisponible(movDer)){
-                document.getElementById(movDer).style.background = "green";
-            }
-            else if(tablero[f-1][c+1].substr(0,1) == "r"){
-                if(casillaEstaDisponible(movDobleDer)){
-                    document.getElementById(movDobleDer).style.background = "green";
-                }
-            }
-        }
-        else if(c == 7){
-            if(casillaEstaDisponible(movIzq)){
-                document.getElementById(movIzq).style.background = "green";
-            }
-            else if(tablero[f-1][c-1].substr(0,1) == "r"){
-                if(casillaEstaDisponible(movDobleIzq)){
-                document.getElementById(movDobleIzq).style.background = "green";
-                }
-            }
-        }
-        else{
-            if(casillaEstaDisponible(movDer)){
-                document.getElementById(movDer).style.background = "green";
-            }
-            else if(tablero[f-1][c+1].substr(0,1) == "r"){
-                if(casillaEstaDisponible(movDobleDer)){
-                    document.getElementById(movDobleDer).style.background = "green";
-                }
-            }
-
-            if(casillaEstaDisponible(movIzq)){
-                document.getElementById(movIzq).style.background = "green";
-            }
-            else if(tablero[f-1][c-1].substr(0,1) == "r"){
-                if(casillaEstaDisponible(movDobleIzq)){
-                document.getElementById(movDobleIzq).style.background = "green";
-                }
-            }
-        }
-    }
-}
-
-
-
-function repintarTablero(){
     
+    var columnaFichaEnemigaDerecha = c+1;
+    var columnaFichaEnemigaIzquierda = c-1;
+
+    switch (id.substr(0, 1)) {
+        case "a":
+            var movDer = ((parseInt(f) - 1).toString() + ((parseInt(c) + 1)).toString());
+            var movIzq = ((parseInt(f) - 1).toString() + ((parseInt(c) - 1)).toString());
+
+            var movDobleDer = ((parseInt(f) - 2).toString() + ((parseInt(c) + 2)).toString());
+            var movDobleIzq = ((parseInt(f) - 2).toString() + ((parseInt(c) - 2)).toString());
+
+            var filaFichaEnemiga = f-1;
+
+            var colorFichaEnemiga = "r";
+            break;
+        case "r":
+            var movDer = ((parseInt(f) + 1).toString() + ((parseInt(c) + 1)).toString());
+            var movIzq = ((parseInt(f) + 1).toString() + ((parseInt(c) - 1)).toString());
+
+            var movDobleDer = ((parseInt(f) + 2).toString() + ((parseInt(c) + 2)).toString());
+            var movDobleIzq = ((parseInt(f) + 2).toString() + ((parseInt(c) - 2)).toString());
+
+            var filaFichaEnemiga = f+1;
+
+            var colorFichaEnemiga = "a";
+    }
+
+    if (f > 1) {
+        if (c == 0) {
+            if (casillaEstaDisponible(movDer)) {
+                document.getElementById(movDer).style.background = "green";
+            }
+            else if (tablero[filaFichaEnemiga][columnaFichaEnemigaDerecha].substr(0, 1) == colorFichaEnemiga) {
+                if (casillaEstaDisponible(movDobleDer)) {
+                    document.getElementById(movDobleDer).style.background = "green";
+                }
+            }
+        }
+        else if (c == 7) {
+            if (casillaEstaDisponible(movIzq)) {
+                document.getElementById(movIzq).style.background = "green";
+            }
+            else if (tablero[filaFichaEnemiga][columnaFichaEnemigaIzquierda].substr(0, 1) == colorFichaEnemiga) {
+                if (casillaEstaDisponible(movDobleIzq)) {
+                    document.getElementById(movDobleIzq).style.background = "green";
+                }
+            }
+        }
+        else {
+            if (casillaEstaDisponible(movDer)) {
+                document.getElementById(movDer).style.background = "green";
+            }
+            else if (tablero[filaFichaEnemiga][columnaFichaEnemigaDerecha].substr(0, 1) == colorFichaEnemiga) {
+                if (casillaEstaDisponible(movDobleDer)) {
+                    document.getElementById(movDobleDer).style.background = "green";
+                }
+            }
+
+            if (casillaEstaDisponible(movIzq)) {
+                document.getElementById(movIzq).style.background = "green";
+            }
+            else if (tablero[filaFichaEnemiga][columnaFichaEnemigaIzquierda].substr(0, 1) == colorFichaEnemiga) {
+                if (casillaEstaDisponible(movDobleIzq)) {
+                    document.getElementById(movDobleIzq).style.background = "green";
+                }
+            }
+        }
+    }
+}
+
+
+
+function repintarTablero() {
+
     for (var i = 0; i < 8; i++) {
 
         for (var j = 0; j < 8; j++) {
@@ -208,35 +169,35 @@ function dibujarFicha(f, c, color, num) {
     switch (color) {
         case "rojo":
             document.getElementById(celda).innerHTML +=
-            '<div id="' + num + '" class = "ficha" > <img src="img/rojo.png" alt="ficha roja" onclick="clickFichaRoja(' + num + ')"></div>';
+                '<div id="' + num + '" class = "fichaRoja" > <img src="img/rojo.png" alt="ficha roja" onclick="clickFicha(' + num + ')"></div>';
             break;
 
         case "azul":
             document.getElementById(celda).innerHTML +=
-            '<div id="' + num + '" class = "ficha"> <img src="img/azul.png" alt="ficha azul" onclick="clickFichaAzul(' + num + ')"></div>';
+                '<div id="' + num + '" class = "fichaAzul"> <img src="img/azul.png" alt="ficha azul" onclick="clickFicha(' + num + ')"></div>';
             break;
     }
 }
 
-function eliminarFicha(idFicha){
+function eliminarFicha(idFicha) {
     var casilla = document.getElementById(idFicha);
     var padre = casilla.parentNode;
     padre.removeChild(casilla);
 }
 
-function moverFicha(idFicha, f, c){
-    
+function moverFicha(idFicha, f, c) {
+
     eliminarFicha(idFicha);
 
     var posFicha = posicion(idFicha);
-    var fvieja = posFicha.substr(0,1);
-    var cvieja = posFicha.substr(1,1);
+    var fvieja = posFicha.substr(0, 1);
+    var cvieja = posFicha.substr(1, 1);
     tablero[fvieja][cvieja] = undefined;
 
-    if(idFicha.substr(0,1) == "r"){
+    if (idFicha.substr(0, 1) == "r") {
         var color = "rojo";
     }
-    else{
+    else {
         var color = "azul";
     }
 
@@ -254,7 +215,7 @@ function dibujarTablero() {
     document.getElementById("Ajedrez").innerHTML += '<tbody id="tbody"></tbody>';
 
     for (var i = 0; i < 8; i++) {
-        
+
         document.getElementById("tbody").innerHTML += '<tr id="fila' + (i.toString()) + '"></tr>';
 
         for (var j = 0; j < 8; j++) {
