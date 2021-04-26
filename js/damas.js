@@ -53,9 +53,13 @@ function casillaEstaDisponible(casilla) {
 }
 
 function intentarMovimiento(casilla) {
+
+    if (parseInt(casilla) < 10) casilla = "0" + casilla;
+    
     if (document.getElementById(casilla).style.background == "green") {
         moverFicha(fichaSeleccionada, casilla.toString().substr(0, 1), casilla.toString().substr(1, 1));
     }
+
 }
 
 function clickFicha(idFicha) {
@@ -71,9 +75,9 @@ function clickFicha(idFicha) {
 
     f = parseInt(f);
     c = parseInt(c);
-    
-    var columnaFichaEnemigaDerecha = c+1;
-    var columnaFichaEnemigaIzquierda = c-1;
+
+    var columnaFichaEnemigaDerecha = c + 1;
+    var columnaFichaEnemigaIzquierda = c - 1;
 
     switch (id.substr(0, 1)) {
         case "a":
@@ -83,7 +87,7 @@ function clickFicha(idFicha) {
             var movDobleDer = ((parseInt(f) - 2).toString() + ((parseInt(c) + 2)).toString());
             var movDobleIzq = ((parseInt(f) - 2).toString() + ((parseInt(c) - 2)).toString());
 
-            var filaFichaEnemiga = f-1;
+            var filaFichaEnemiga = f - 1;
 
             var colorFichaEnemiga = "r";
             break;
@@ -94,51 +98,37 @@ function clickFicha(idFicha) {
             var movDobleDer = ((parseInt(f) + 2).toString() + ((parseInt(c) + 2)).toString());
             var movDobleIzq = ((parseInt(f) + 2).toString() + ((parseInt(c) - 2)).toString());
 
-            var filaFichaEnemiga = f+1;
+            var filaFichaEnemiga = f + 1;
 
             var colorFichaEnemiga = "a";
     }
 
-    if (f > 1) {
-        if (c == 0) {
-            if (casillaEstaDisponible(movDer)) {
-                document.getElementById(movDer).style.background = "green";
-            }
-            else if (tablero[filaFichaEnemiga][columnaFichaEnemigaDerecha].substr(0, 1) == colorFichaEnemiga) {
-                if (casillaEstaDisponible(movDobleDer)) {
-                    document.getElementById(movDobleDer).style.background = "green";
-                }
+    try {
+        if (casillaEstaDisponible(movDer)) {
+            document.getElementById(movDer).style.background = "green";
+        }
+        else if (tablero[filaFichaEnemiga][columnaFichaEnemigaDerecha].substr(0, 1) == colorFichaEnemiga) {
+            if (casillaEstaDisponible(movDobleDer)) {
+                document.getElementById(movDobleDer).style.background = "green";
             }
         }
-        else if (c == 7) {
-            if (casillaEstaDisponible(movIzq)) {
-                document.getElementById(movIzq).style.background = "green";
-            }
-            else if (tablero[filaFichaEnemiga][columnaFichaEnemigaIzquierda].substr(0, 1) == colorFichaEnemiga) {
-                if (casillaEstaDisponible(movDobleIzq)) {
-                    document.getElementById(movDobleIzq).style.background = "green";
-                }
-            }
-        }
-        else {
-            if (casillaEstaDisponible(movDer)) {
-                document.getElementById(movDer).style.background = "green";
-            }
-            else if (tablero[filaFichaEnemiga][columnaFichaEnemigaDerecha].substr(0, 1) == colorFichaEnemiga) {
-                if (casillaEstaDisponible(movDobleDer)) {
-                    document.getElementById(movDobleDer).style.background = "green";
-                }
-            }
+    }
+    catch {
+        console.log("La ficha no se puede mover a la derecha");
+    }
 
-            if (casillaEstaDisponible(movIzq)) {
-                document.getElementById(movIzq).style.background = "green";
-            }
-            else if (tablero[filaFichaEnemiga][columnaFichaEnemigaIzquierda].substr(0, 1) == colorFichaEnemiga) {
-                if (casillaEstaDisponible(movDobleIzq)) {
-                    document.getElementById(movDobleIzq).style.background = "green";
-                }
+    try {
+        if (casillaEstaDisponible(movIzq)) {
+            document.getElementById(movIzq).style.background = "green";
+        }
+        else if (tablero[filaFichaEnemiga][columnaFichaEnemigaIzquierda].substr(0, 1) == colorFichaEnemiga) {
+            if (casillaEstaDisponible(movDobleIzq)) {
+                document.getElementById(movDobleIzq).style.background = "green";
             }
         }
+    }
+    catch {
+        console.log("La ficha no se puede mover a la izquierda");
     }
 }
 
