@@ -57,11 +57,8 @@ function clickFichaRoja(idFicha){
     var id = idFicha.id;
     fichaSeleccionada = id;
     var pos = posicion(id);
-    console.log(pos);
     var f = pos.substr(0,1);
-    console.log("f:" + f);
     var c = pos.substr(1,1);
-    console.log("c:" + c);
 
     var movDer = ((parseInt(f) + 1).toString() + ((parseInt(c) + 1)).toString());
     var movIzq = ((parseInt(f) + 1).toString() + ((parseInt(c) - 1)).toString());
@@ -79,11 +76,9 @@ function clickFichaRoja(idFicha){
         }
         else{
             if(casillaEstaDisponible(movDer)){
-                console.log((casillaEstaDisponible(movDer)));
                 document.getElementById(movDer).style.background = "green";
             }
             if(casillaEstaDisponible(movIzq)){
-                console.log((casillaEstaDisponible(movIzq)));
                 document.getElementById(movIzq).style.background = "green";
             }
         }
@@ -92,7 +87,6 @@ function clickFichaRoja(idFicha){
 
 function intentarMovimiento(casilla){
     if(document.getElementById(casilla).style.background == "green"){
-        console.log("mover ficha: id:" + fichaSeleccionada + " fila: " + casilla.toString().substr(0,1) + " col: " + casilla.toString().substr(1,1));
         moverFicha(fichaSeleccionada,casilla.toString().substr(0,1), casilla.toString().substr(1,1));
         
     }
@@ -103,7 +97,6 @@ function clickFichaAzul(idFicha){
     var id = idFicha.id;
     fichaSeleccionada = id;
     var pos = posicion(id);
-    console.log(pos);
     var f = pos.substr(0,1);
     var c = pos.substr(1,1);
 
@@ -159,18 +152,17 @@ function dibujarFicha(f, c, color, num) {
     switch (color) {
         case "rojo":
             document.getElementById(celda).innerHTML +=
-            '<div id="' + num + '" style="height:100%; width:100%"> <img src="img/rojo.png" alt="ficha roja" style= "margin-left:10%; margin-top:10%;" onclick="clickFichaRoja(' + num + ')"></div>';
+            '<div id="' + num + '" class = "ficha" > <img src="img/rojo.png" alt="ficha roja" onclick="clickFichaRoja(' + num + ')"></div>';
             break;
 
         case "azul":
             document.getElementById(celda).innerHTML +=
-            '<div id="' + num + '" style="height:100%; width:100%"> <img src="img/azul.png" alt="ficha azul" style= "margin-left:10%; margin-top:10%;" onclick="clickFichaAzul(' + num + ')"></div>';
+            '<div id="' + num + '" class = "ficha"> <img src="img/azul.png" alt="ficha azul" onclick="clickFichaAzul(' + num + ')"></div>';
             break;
     }
 }
 
 function eliminarFicha(idFicha){
-    console.log("id en eliminar: " + idFicha);
     var casilla = document.getElementById(idFicha);
     var padre = casilla.parentNode;
     padre.removeChild(casilla);
@@ -178,7 +170,6 @@ function eliminarFicha(idFicha){
 
 function moverFicha(idFicha, f, c){
     
-    console.log("id en mover: " + idFicha);
     eliminarFicha(idFicha);
 
     var posFicha = posicion(idFicha);
@@ -198,14 +189,6 @@ function moverFicha(idFicha, f, c){
     repintarTablero();
 }
 
-function esconderBoton() {
-    try {
-        document.getElementById("inicio").style.visibility = 'hidden';
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 function dibujarTablero() {
 
     var casilla = '';
@@ -218,30 +201,19 @@ function dibujarTablero() {
 
             if ((i + j) % 2 == 0) {
 
-                try {
-                    document.getElementById("Ajedrez").innerHTML +=
-                        '<div id="' + casilla + '" style="width:100px; height:100px; background-color:white; float:left;" onclick="intentarMovimiento(' + casilla + ')"></div>';
-                } catch (error) {
-                    console.log(error);
-                }
+                document.getElementById("Ajedrez").innerHTML += '<div id="' + casilla + '" class = "casillaBlanca" onclick="intentarMovimiento(' + casilla + ')"></div>';
 
             }
             else {
 
-                try {
-                    document.getElementById("Ajedrez").innerHTML +=
-                        '<div id="' + casilla + '" style="width:100px; height:100px; background-color:black; float:left;" onclick="intentarMovimiento(' + casilla + ')"></div>';
-                } catch (error) {
-                    console.log(error);
-                }
+                document.getElementById("Ajedrez").innerHTML += '<div id="' + casilla + '" class = "casillaNegra" onclick="intentarMovimiento(' + casilla + ')"></div>';
 
             }
         }
     }
 
-    esconderBoton();
     llenarMatriz();
 
 }
 
-(() => { console.log("hola"); dibujarTablero() })();
+dibujarTablero();

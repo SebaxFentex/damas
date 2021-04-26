@@ -1,0 +1,33 @@
+body{
+    background-color:midnightblue;
+}
+
+img{
+    margin-left:10%;
+    margin-top:10%
+}
+
+#contenedor{
+    width: 800px;
+    height: 800px;
+    padding: 0px;
+}
+
+.ficha{
+    height:100%;
+    width:100%;
+}
+
+.casillaBlanca{
+    width:100px;
+    height:100px;
+    background-color:white;
+    float:left;
+}
+
+.casillaNegra{
+    width:100px;
+    height:100px;
+    background-color:black;
+    float:left;
+}
