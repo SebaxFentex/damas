@@ -5,9 +5,9 @@ var casillaFichaEnMedio = '';
 var turnoRojo = true;
 var laFichaVieneDeMatar = false;
 
-var audioMoverFicha = new Audio("/sonido/moverFicha.mp3");
-var audioMatarFicha = new Audio("/sonido/matarFicha.mp3");
-var audioMatarUltima = new Audio("/sonido/checkmate.mp3");
+var audioMoverFicha = new Audio("sonido/moverFicha.mp3");
+var audioMatarFicha = new Audio("sonido/matarFicha.mp3");
+var audioMatarUltima = new Audio("sonido/checkmate.mp3");
 
 var tablero = new Array(8);
 
