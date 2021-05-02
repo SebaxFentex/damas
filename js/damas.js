@@ -58,12 +58,12 @@ function dibujarTablero() { // Dibujo inicial del tablero
 
             if ((i + j) % 2 == 0) {
 
-                document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaBlanca" onclick="intentarMovimiento(' + casilla + ')"></td>';
+                document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaBlanca" onclick="intentarMovimiento(' + casilla + ')" click="intentarMovimiento(' + casilla + ')"></td>';
 
             }
             else {
 
-                document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaNegra" onclick="intentarMovimiento(' + casilla + ')"></td>';
+                document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaNegra" onclick="intentarMovimiento(' + casilla + ')" click="intentarMovimiento(' + casilla + ')"></td>';
 
             }
         }
