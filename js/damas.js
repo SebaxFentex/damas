@@ -1,6 +1,7 @@
 var fichaSeleccionada;
 var casillaFichaEnMedio = '';
 var turnoRojo = true;
+var laFichaVieneDeMatar = false;
 
 var tablero = new Array(8);
 
@@ -32,12 +33,12 @@ function llenarMatriz() { // LLENA LA MATRIZ CON LAS POSICIONES INICIALES DE LAS
             }
         }
     }
-    console.log(tablero);
+
 }
 
 function posicion(idFicha) { // RETORNA LA POSICION EN FORMA DE COORDENADAS DE UNA FICHA A PARTIR DE SU ID
     //idFicha = idFicha.substr(0,3);
-    console.log("idFicha dentro de posicion:" + idFicha);
+
     for (let f = 0; f < 8; f++) {
         for (let c = 0; c < 8; c++) {
             if (tablero[f][c] == idFicha) {
@@ -68,24 +69,31 @@ function intentarMovimiento(casilla) { // REVISA SI LA CASILLA ES COLOR VERDE, D
         turnoRojo = !turnoRojo;
     }
     else if (document.getElementById(casilla).style.background == "lime") {
+
         moverFicha(fichaSeleccionada, casilla.toString().substr(0, 1), casilla.toString().substr(1, 1));
         eliminarFichaPos(casillaFichaEnMedio);
-        //turnoRojo = !turnoRojo;
+
+        laFichaVieneDeMatar = true;
         clickFicha(document.getElementById(casilla.toString().substr(0, 1) + casilla.toString().substr(1, 1)).firstChild);
-        
+        laFichaVieneDeMatar = false;
+
         var lista = (document.querySelectorAll("td"));
         var sePuedeMover = false;
-        for(let elemento of lista){
-            if(elemento.style.background == "lime"){
+        for (let elemento of lista) {
+            if (elemento.style.background == "lime") {
                 sePuedeMover = true;
-                turnoRojo = !turnoRojo;
             }
         }
-
-        if(!sePuedeMover){
+        if (!sePuedeMover) {
             turnoRojo = !turnoRojo;
         }
     }
+}
+
+function validarCasilla(casilla) { // REVISA SI UNA CASILLA ES VALIDA, ES DECIR, SI ESTÁ ENTRE [0,0] Y [7,7]
+    var fila = parseInt(casilla.toString().substr(0, 1));
+    var columna = parseInt(casilla.toString().substr(1, 1));
+    return (((fila - 0) * (fila - 7) <= 0) && ((columna - 0) * (columna - 7) <= 0));
 }
 
 function clickFicha(idFicha) { // FUNCION DE MOVIMIENTO PRINCIPAL, RECIBE UNA FICHA Y COMPRUEBA DONDE SE PUEDE MOVER, EN CUYO CASO PINTA LA(S) CASILLA(S) DE VERDE
@@ -94,204 +102,62 @@ function clickFicha(idFicha) { // FUNCION DE MOVIMIENTO PRINCIPAL, RECIBE UNA FI
 
     var id = idFicha.id;
     fichaSeleccionada = id;
-    var pos = posicion(id);
-    console.log("pos:" + pos);
-    console.log(tablero);
-
-    var f = pos.substr(0, 1);
-    var c = pos.substr(1, 1);
-
-    f = parseInt(f);
-    c = parseInt(c);
-
-    var columnaFichaEnemigaDerecha = c + 1;
-    var columnaFichaEnemigaIzquierda = c - 1;
-
-    var colMovSimpleDer = (c + 1).toString();
-    var colMovSimpleIzq = (c - 1).toString();
-
-    var colMovDobleDer = (c + 2).toString();
-    var colMovDobleIzq = (c - 2).toString();
+    var color = id.substr(0, 1);
 
     var turno;
     turnoRojo ? turno = "r" : turno = "a";
 
-    if (id.substr(0, 1) == turno) {
 
-        if (idFicha.id.substr(3, 1) == "c") { // SI LA FICHA ESTÁ CORONADA
 
-            try {
-                var arribaIzqSimple = (f - 1).toString() + (c - 1).toString();
-                if (casillaEstaDisponible(arribaIzqSimple)) {
-                    document.getElementById(arribaIzqSimple).style.background = "green";
-                }
-                else {
-                    try {
-                        if (tablero[f - 1][c - 1].substr(0, 1) != idFicha.id.substr(0, 1)) {
-                            try {
-                                var arribaIzqDoble = (f - 2).toString() + (c - 2).toString();
-                                if (casillaEstaDisponible(arribaIzqDoble)) {
-                                    document.getElementById(arribaIzqDoble).style.background = "lime";
-                                    casillaFichaEnMedio = arribaIzqSimple;
+
+    if (color == turno) { // SI LA FICHA A LA QUE SE LE DIO CLICK ESTÁ EN SU TURNO
+
+        // GENERALIZACIÓN DEL MOVIMIENTO -> [0] = AbajoDerecha, [1] = AbajoIzquierda, [2] = ArribaIzquierda, [3] = ArribaDerecha
+        var sentidoFila = [1, 1, -1, -1];
+        var sentidoColumna = [1, -1, -1, 1];
+
+        var filaOrigen = posicion(id).substr(0, 1);
+        var columnaOrigen = posicion(id).substr(1, 1);
+
+        filaOrigen = parseInt(filaOrigen);
+        columnaOrigen = parseInt(columnaOrigen);
+        var casillaIntento, filaIntento, columnaIntento;
+
+        for (let i = 0; i < 4; i++) {
+
+            filaIntento = filaOrigen + sentidoFila[i];
+
+            columnaIntento = columnaOrigen + sentidoColumna[i];
+
+            casillaIntento = filaIntento.toString() + columnaIntento.toString();
+
+            if (validarCasilla(casillaIntento)) {
+
+                if ((color == "a" && sentidoFila[i] == -1) || (color == "r" && sentidoFila[i] == 1) || (id.substr(3, 1) == "c")) {
+
+                    if (casillaEstaDisponible(casillaIntento) && laFichaVieneDeMatar == false) {
+                        document.getElementById(casillaIntento).style.background = "green";
+                    }
+                    else {
+
+                        console.log(casillaIntento);
+                        if ( casillaEstaDisponible(casillaIntento) == false && (tablero[filaIntento][columnaIntento].substr(0, 1) != color)) {
+
+                            casillaIntento = (filaOrigen + (2 * sentidoFila[i])).toString() + (columnaOrigen + (2 * sentidoColumna[i])).toString();
+
+                            if (validarCasilla(casillaIntento)) {
+                                if (casillaEstaDisponible(casillaIntento)) {
+                                    document.getElementById(casillaIntento).style.background = "lime";
+                                    casillaFichaEnMedio = (filaOrigen + (1 * sentidoFila[i])).toString() + (columnaOrigen + (1 * sentidoColumna[i])).toString();
+
                                 }
-                            } catch (error) {
-
                             }
                         }
-                    } catch (error) {
-                        console.log(error);
                     }
-                }
-            } catch (error) {
-                console.log(error);
-            }
-
-            try {
-                var arribaDerSimple = (f - 1).toString() + (c + 1).toString();
-                if (casillaEstaDisponible(arribaDerSimple)) {
-                    document.getElementById(arribaDerSimple).style.background = "green";
-                }
-                else {
-                    try {
-                        if (tablero[f - 1][c + 1].substr(0, 1) != idFicha.id.substr(0, 1)) {
-                            try {
-                                var arribaDerDoble = (f - 2).toString() + (c + 2).toString();
-                                if (casillaEstaDisponible(arribaDerDoble)) {
-                                    document.getElementById(arribaDerDoble).style.background = "lime";
-                                    casillaFichaEnMedio = arribaDerSimple;
-                                }
-                            } catch (error) {
-                                console.log(error);
-                            }
-                        }
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }
-            } catch (error) {
-                console.log(error);
-            }
-
-            try {
-                var abajoDerSimple = (f + 1).toString() + (c + 1).toString();
-                if (casillaEstaDisponible(abajoDerSimple)) {
-                    document.getElementById(abajoDerSimple).style.background = "green";
-                }
-                else {
-                    try {
-                        if (tablero[f + 1][c + 1].substr(0, 1) != idFicha.id.substr(0, 1)) {
-                            try {
-                                var abajoDerDoble = (f + 2).toString() + (c + 2).toString();
-                                if (casillaEstaDisponible(abajoDerDoble)) {
-                                    document.getElementById(abajoDerDoble).style.background = "lime";
-                                    casillaFichaEnMedio = abajoDerSimple;
-                                }
-                            } catch (error) {
-                                console.log(error);
-                            }
-                        }
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }
-            } catch (error) {
-                console.log(error);
-            }
-
-            try {
-                var abajoIzqSimple = (f + 1).toString() + (c - 1).toString();
-                if (casillaEstaDisponible(abajoIzqSimple)) {
-                    document.getElementById(abajoIzqSimple).style.background = "green";
-                }
-                else {
-                    try {
-                        if (tablero[f + 1][c - 1].substr(0, 1) != idFicha.id.substr(0, 1)) {
-                            try {
-                                var abajoIzqDoble = (f + 2).toString() + (c - 2).toString();
-                                if (casillaEstaDisponible(abajoIzqDoble)) {
-                                    document.getElementById(abajoIzqDoble).style.background = "lime";
-                                    casillaFichaEnMedio = abajoIzqSimple;
-                                }
-                            } catch (error) {
-                                console.log(error);
-                            }
-                        }
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-
-        switch (id.substr(0, 1)) {
-            case "a": // LAS AZULES SE MUEVEN HACIA ARRIBA
-
-                var filaMovSimple = (f - 1).toString();
-                var filaMovDoble = (f - 2).toString();
-
-                var filaFichaEnemiga = f - 1;
-                var colorFichaEnemiga = "r";
-                break;
-            case "r": // LAS ROJAS SE MUEVEN HACIA ABAJO
-
-                var filaMovSimple = (f + 1).toString();
-                var filaMovDoble = (f + 2).toString();
-
-                var filaFichaEnemiga = f + 1;
-                var colorFichaEnemiga = "a";
-        }
-
-        var movDer = (filaMovSimple + colMovSimpleDer);
-        var movIzq = (filaMovSimple + colMovSimpleIzq);
-
-        var movDobleDer = (filaMovDoble + colMovDobleDer);
-        var movDobleIzq = (filaMovDoble + colMovDobleIzq);
-
-        try {
-            if (casillaEstaDisponible(movDer)) {
-                document.getElementById(movDer).style.background = "green";
-            }
-            else {
-                try {
-                    if (tablero[filaFichaEnemiga][columnaFichaEnemigaDerecha].substr(0, 1) == colorFichaEnemiga) {
-                        try {
-                            if (casillaEstaDisponible(movDobleDer)) {
-                                document.getElementById(movDobleDer).style.background = "lime";
-                                casillaFichaEnMedio = movDer;
-                            }
-                        } catch {
-                        }
-                    }
-                } catch {
-                }
-            }
-
-            if (casillaEstaDisponible(movIzq)) {
-                document.getElementById(movIzq).style.background = "green";
-            }
-            else {
-                try {
-                    if (tablero[filaFichaEnemiga][columnaFichaEnemigaIzquierda].substr(0, 1) == colorFichaEnemiga) {
-                        try {
-                            if (casillaEstaDisponible(movDobleIzq)) {
-                                document.getElementById(movDobleIzq).style.background = "lime";
-                                casillaFichaEnMedio = movIzq;
-                            }
-                        } catch {
-                        }
-                    }
-                } catch {
                 }
             }
         }
-        catch {
-        }
-
     }
-
 }
 
 function repintarTablero() { // DEVUELVE LOS COLORES ORIGINALES (BLANCO Y NEGRO) AL TABLERO
@@ -314,23 +180,30 @@ function repintarTablero() { // DEVUELVE LOS COLORES ORIGINALES (BLANCO Y NEGRO)
 }
 
 function dibujarFicha(f, c, color, num) { // DIBUJA UNA FICHA EN UNA POSICION INDICADA Y LE PONE ID
+
     var celda = f.toString() + c.toString();
 
     switch (color) {
         case "rojo":
             if (num.substr(3, 1) == "c") {
+
                 document.getElementById(celda).innerHTML += '<div id="' + num + '" class = "fichaRoja" > <img src="img/rojoCorona.png" alt="ficha roja" onclick="clickFicha(' + num + ')"></div>';
             }
             else {
+
                 document.getElementById(celda).innerHTML += '<div id="' + num + '" class = "fichaRoja" > <img src="img/rojo.png" alt="ficha roja" onclick="clickFicha(' + num + ')"></div>';
             }
             break;
 
         case "azul":
             if (num.substr(3, 1) == "c") {
+
+
                 document.getElementById(celda).innerHTML += '<div id="' + num + '" class = "fichaAzul" > <img src="img/azulCorona.png" alt="ficha azul" onclick="clickFicha(' + num + ')"></div>';
+
             }
             else {
+
                 document.getElementById(celda).innerHTML += '<div id="' + num + '" class = "fichaAzul" > <img src="img/azul.png" alt="ficha azul" onclick="clickFicha(' + num + ')"></div>';
             }
             break;
@@ -361,8 +234,8 @@ function eliminarFichaPos(casilla) { // ELIMINA UNA FICHA CON LA POSICION
     var fichasRestantesAzul = document.getElementsByClassName("fichaAzul").length;
     var fichasRestantesRojo = document.getElementsByClassName("fichaRoja").length;
 
-    console.log("Quedan " + fichasRestantesAzul + " fichas azules");
-    console.log("Quedan " + fichasRestantesRojo + " fichas rojas");
+
+
 
     if (fichasRestantesAzul == 0) {
         alert("Las fichas rojas han ganado!");
@@ -381,13 +254,13 @@ function moverFicha(idFicha, f, c) { // MUEVE UNA FICHA DE UNA POSICIÓN A OTRA 
 
 
 
+
     if (idFicha.substr(0, 1) == "r") {
         var color = "rojo";
     }
     else {
         var color = "azul";
     }
-    console.log(idFicha);
 
 
     dibujarFicha(f, c, color, idFicha);
