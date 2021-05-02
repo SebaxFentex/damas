@@ -5,6 +5,10 @@ var casillaFichaEnMedio = '';
 var turnoRojo = true;
 var laFichaVieneDeMatar = false;
 
+var audioMoverFicha = new Audio("/sonido/moverFicha.mp3");
+var audioMatarFicha = new Audio("/sonido/matarFicha.mp3");
+var audioMatarUltima = new Audio("/sonido/checkmate.mp3");
+
 var tablero = new Array(8);
 
 for (let c = 0; c < 8; c++) {
@@ -95,14 +99,17 @@ function casillaEstaDisponible(casilla) { // Verifica si una casilla está vací
 
 function intentarMovimiento(casilla) { // Revisa si la casilla es verde y se encarga del movimiento
 
+    
     if (parseInt(casilla) < 10) casilla = "0" + casilla;
 
     if (document.getElementById(casilla).style.background == "green") {
+        audioMoverFicha.play();
         moverFicha(fichaSeleccionada, casilla.toString().substr(0, 1), casilla.toString().substr(1, 1));
-        turnoRojo = !turnoRojo;
+        pasarTurno();
     }
     else if (document.getElementById(casilla).style.background == "lime") {
 
+        audioMatarFicha.play();
         moverFicha(fichaSeleccionada, casilla.toString().substr(0, 1), casilla.toString().substr(1, 1));
         eliminarFichaPos(casillaFichaEnMedio);
 
@@ -123,7 +130,18 @@ function revisarSiPasaTurno() { // Busca si hay celdas color "lime", si no hay p
         }
     }
     if (!sePuedeMover) {
-        turnoRojo = !turnoRojo;
+        pasarTurno();
+    }
+}
+
+function pasarTurno(){
+    turnoRojo = !turnoRojo;
+    switch(turnoRojo){
+        case true:
+            document.getElementById("texto").innerHTML = "Es turno de las fichas rojas";
+            break;
+        case false:
+            document.getElementById("texto").innerHTML = "Es turno de las fichas azules";
     }
 }
 
@@ -147,8 +165,8 @@ function clickFicha(idFicha) { // Funcion de movimiento principal
     if (color == turno) { // SI LA FICHA A LA QUE SE LE DIO CLICK ESTÁ EN SU TURNO
 
         // GENERALIZACIÓN DEL MOVIMIENTO -> [0] = AbajoDerecha, [1] = AbajoIzquierda, [2] = ArribaIzquierda, [3] = ArribaDerecha
-        var sentidoFila = [1, 1, -1, -1];
-        var sentidoColumna = [1, -1, -1, 1];
+        var sentidoFila     = [1, 1, -1, -1];
+        var sentidoColumna  = [1, -1, -1, 1];
 
         var filaOrigen = posicion(id).substr(0, 1);
         var columnaOrigen = posicion(id).substr(1, 1);
@@ -168,13 +186,15 @@ function clickFicha(idFicha) { // Funcion de movimiento principal
                 // Si es azul y se intenta mover hacia arriba, o si es roja y se intenta mover hacia abajo, o si es una ficha coronada
                 if ((color == "a" && sentidoFila[i] == -1) || (color == "r" && sentidoFila[i] == 1) || (id.substr(3, 1) == "c")) {
 
-                    if (casillaEstaDisponible(casillaIntento) && laFichaVieneDeMatar == false) {
-                        document.getElementById(casillaIntento).style.background = "green";
+                    if (casillaEstaDisponible(casillaIntento)) {
+                        if(laFichaVieneDeMatar == false){
+                            document.getElementById(casillaIntento).style.background = "green";
+                        }
                     }
                     else {
 
-                        // Si la casilla no esta disponible y la tapa una ficha enemiga
-                        if (casillaEstaDisponible(casillaIntento) == false && (tablero[filaIntento][columnaIntento].substr(0, 1) != color)) {
+                        // Si el movimiento lo tapa una ficha enemiga
+                        if (tablero[filaIntento][columnaIntento].substr(0, 1) != color) {
 
                             casillaIntento = (filaOrigen + (2 * sentidoFila[i])).toString() + (columnaOrigen + (2 * sentidoColumna[i])).toString();
 
