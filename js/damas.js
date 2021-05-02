@@ -1,3 +1,5 @@
+/* Copyright (c) 2021 Sebastián Fuentes */
+
 var fichaSeleccionada;
 var casillaFichaEnMedio = '';
 var turnoRojo = true;
@@ -9,7 +11,7 @@ for (let c = 0; c < 8; c++) {
     tablero[c] = new Array(8);
 }
 
-function llenarMatriz() { // LLENA LA MATRIZ CON LAS POSICIONES INICIALES DE LAS FICHAS Y LAS DIBUJA EN EL TABLERO
+function llenarMatriz() { // Llena la matriz con las posiciones iniciales de las fichas y las ubica en el tablero
     var i = 1;
     for (let f = 0; f < 3; f++) {
         for (let c = 0; c < 8; c++) {
@@ -36,7 +38,38 @@ function llenarMatriz() { // LLENA LA MATRIZ CON LAS POSICIONES INICIALES DE LAS
 
 }
 
-function posicion(idFicha) { // RETORNA LA POSICION EN FORMA DE COORDENADAS DE UNA FICHA A PARTIR DE SU ID
+function dibujarTablero() { // Dibujo inicial del tablero
+
+    var casilla = '';
+
+    document.getElementById("Ajedrez").innerHTML += '<tbody id="tbody"></tbody>';
+
+    for (var i = 0; i < 8; i++) {
+
+        document.getElementById("tbody").innerHTML += '<tr id="fila' + (i.toString()) + '"></tr>';
+
+        for (var j = 0; j < 8; j++) {
+
+            casilla = i.toString() + j.toString();
+
+            if ((i + j) % 2 == 0) {
+
+                document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaBlanca" onclick="intentarMovimiento(' + casilla + ')"></td>';
+
+            }
+            else {
+
+                document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaNegra" onclick="intentarMovimiento(' + casilla + ')"></td>';
+
+            }
+        }
+    }
+
+    llenarMatriz();
+
+}
+
+function posicion(idFicha) { // Retorna la posición de una ficha en forma de coordenadas a partir de su ID
     //idFicha = idFicha.substr(0,3);
 
     for (let f = 0; f < 8; f++) {
@@ -48,7 +81,7 @@ function posicion(idFicha) { // RETORNA LA POSICION EN FORMA DE COORDENADAS DE U
     }
 }
 
-function casillaEstaDisponible(casilla) { // VERIFICA SI UNA CASILLA ESTÁ VACÍA
+function casillaEstaDisponible(casilla) { // Verifica si una casilla está vacía
     var f = casilla.substr(0, 1);
     var c = casilla.substr(1, 1);
     if ((tablero[f][c]) == undefined && (c >= 0 && c < 8)) {
@@ -60,7 +93,7 @@ function casillaEstaDisponible(casilla) { // VERIFICA SI UNA CASILLA ESTÁ VACÍ
 
 }
 
-function intentarMovimiento(casilla) { // REVISA SI LA CASILLA ES COLOR VERDE, DE SER ASI LLAMA A moverFicha
+function intentarMovimiento(casilla) { // Revisa si la casilla es verde y se encarga del movimiento
 
     if (parseInt(casilla) < 10) casilla = "0" + casilla;
 
@@ -77,26 +110,30 @@ function intentarMovimiento(casilla) { // REVISA SI LA CASILLA ES COLOR VERDE, D
         clickFicha(document.getElementById(casilla.toString().substr(0, 1) + casilla.toString().substr(1, 1)).firstChild);
         laFichaVieneDeMatar = false;
 
-        var lista = (document.querySelectorAll("td"));
-        var sePuedeMover = false;
-        for (let elemento of lista) {
-            if (elemento.style.background == "lime") {
-                sePuedeMover = true;
-            }
-        }
-        if (!sePuedeMover) {
-            turnoRojo = !turnoRojo;
-        }
+        revisarSiPasaTurno();
     }
 }
 
-function validarCasilla(casilla) { // REVISA SI UNA CASILLA ES VALIDA, ES DECIR, SI ESTÁ ENTRE [0,0] Y [7,7]
+function revisarSiPasaTurno() { // Busca si hay celdas color "lime", si no hay pasa turno
+    var lista = (document.querySelectorAll("td"));
+    var sePuedeMover = false;
+    for (let elemento of lista) {
+        if (elemento.style.background == "lime") {
+            sePuedeMover = true;
+        }
+    }
+    if (!sePuedeMover) {
+        turnoRojo = !turnoRojo;
+    }
+}
+
+function validarCasilla(casilla) { // Revisa si una casilla está entre [0,0] y [7,7]
     var fila = parseInt(casilla.toString().substr(0, 1));
     var columna = parseInt(casilla.toString().substr(1, 1));
     return (((fila - 0) * (fila - 7) <= 0) && ((columna - 0) * (columna - 7) <= 0));
 }
 
-function clickFicha(idFicha) { // FUNCION DE MOVIMIENTO PRINCIPAL, RECIBE UNA FICHA Y COMPRUEBA DONDE SE PUEDE MOVER, EN CUYO CASO PINTA LA(S) CASILLA(S) DE VERDE
+function clickFicha(idFicha) { // Funcion de movimiento principal
 
     repintarTablero();
 
@@ -106,9 +143,6 @@ function clickFicha(idFicha) { // FUNCION DE MOVIMIENTO PRINCIPAL, RECIBE UNA FI
 
     var turno;
     turnoRojo ? turno = "r" : turno = "a";
-
-
-
 
     if (color == turno) { // SI LA FICHA A LA QUE SE LE DIO CLICK ESTÁ EN SU TURNO
 
@@ -126,13 +160,12 @@ function clickFicha(idFicha) { // FUNCION DE MOVIMIENTO PRINCIPAL, RECIBE UNA FI
         for (let i = 0; i < 4; i++) {
 
             filaIntento = filaOrigen + sentidoFila[i];
-
             columnaIntento = columnaOrigen + sentidoColumna[i];
-
             casillaIntento = filaIntento.toString() + columnaIntento.toString();
 
             if (validarCasilla(casillaIntento)) {
 
+                // Si es azul y se intenta mover hacia arriba, o si es roja y se intenta mover hacia abajo, o si es una ficha coronada
                 if ((color == "a" && sentidoFila[i] == -1) || (color == "r" && sentidoFila[i] == 1) || (id.substr(3, 1) == "c")) {
 
                     if (casillaEstaDisponible(casillaIntento) && laFichaVieneDeMatar == false) {
@@ -140,8 +173,8 @@ function clickFicha(idFicha) { // FUNCION DE MOVIMIENTO PRINCIPAL, RECIBE UNA FI
                     }
                     else {
 
-                        console.log(casillaIntento);
-                        if ( casillaEstaDisponible(casillaIntento) == false && (tablero[filaIntento][columnaIntento].substr(0, 1) != color)) {
+                        // Si la casilla no esta disponible y la tapa una ficha enemiga
+                        if (casillaEstaDisponible(casillaIntento) == false && (tablero[filaIntento][columnaIntento].substr(0, 1) != color)) {
 
                             casillaIntento = (filaOrigen + (2 * sentidoFila[i])).toString() + (columnaOrigen + (2 * sentidoColumna[i])).toString();
 
@@ -160,7 +193,7 @@ function clickFicha(idFicha) { // FUNCION DE MOVIMIENTO PRINCIPAL, RECIBE UNA FI
     }
 }
 
-function repintarTablero() { // DEVUELVE LOS COLORES ORIGINALES (BLANCO Y NEGRO) AL TABLERO
+function repintarTablero() { // Devuelve los colores originales al tablero
 
     for (var i = 0; i < 8; i++) {
 
@@ -179,7 +212,7 @@ function repintarTablero() { // DEVUELVE LOS COLORES ORIGINALES (BLANCO Y NEGRO)
     }
 }
 
-function dibujarFicha(f, c, color, num) { // DIBUJA UNA FICHA EN UNA POSICION INDICADA Y LE PONE ID
+function dibujarFicha(f, c, color, num) { // Dibuja una ficha con una posición e ID específicos
 
     var celda = f.toString() + c.toString();
 
@@ -210,7 +243,7 @@ function dibujarFicha(f, c, color, num) { // DIBUJA UNA FICHA EN UNA POSICION IN
     }
 }
 
-function eliminarFicha(idFicha) { // ELIMINA UNA FICHA Y EL DIV QUE LA CONTIENE (NO LA CASILLA)
+function eliminarFicha(idFicha) { // Elimina una ficha, ideal para la ficha que se mueve
     var casilla = document.getElementById(idFicha);
     var padre = casilla.parentNode;
     padre.removeChild(casilla);
@@ -221,7 +254,7 @@ function eliminarFicha(idFicha) { // ELIMINA UNA FICHA Y EL DIV QUE LA CONTIENE 
     tablero[fvieja][cvieja] = undefined;
 }
 
-function eliminarFichaPos(casilla) { // ELIMINA UNA FICHA CON LA POSICION
+function eliminarFichaPos(casilla) { // Elimina una ficha, ideal para la ficha que se mata
     var casillaElemento = document.getElementById(casilla).firstChild;
     var padre = casillaElemento.parentNode;
     padre.removeChild(casillaElemento);
@@ -234,9 +267,6 @@ function eliminarFichaPos(casilla) { // ELIMINA UNA FICHA CON LA POSICION
     var fichasRestantesAzul = document.getElementsByClassName("fichaAzul").length;
     var fichasRestantesRojo = document.getElementsByClassName("fichaRoja").length;
 
-
-
-
     if (fichasRestantesAzul == 0) {
         alert("Las fichas rojas han ganado!");
         location.reload();
@@ -248,7 +278,7 @@ function eliminarFichaPos(casilla) { // ELIMINA UNA FICHA CON LA POSICION
     }
 }
 
-function moverFicha(idFicha, f, c) { // MUEVE UNA FICHA DE UNA POSICIÓN A OTRA INCLUYENDO SU ID
+function moverFicha(idFicha, f, c) { // Mueve una ficha hacia una posición determinada
 
     eliminarFicha(idFicha);
 
@@ -280,37 +310,6 @@ function moverFicha(idFicha, f, c) { // MUEVE UNA FICHA DE UNA POSICIÓN A OTRA 
     }
 
     tablero[f][c] = idFicha;
-
-}
-
-function dibujarTablero() { // DIBUJO INICIAL DEL TABLERO
-
-    var casilla = '';
-
-    document.getElementById("Ajedrez").innerHTML += '<tbody id="tbody"></tbody>';
-
-    for (var i = 0; i < 8; i++) {
-
-        document.getElementById("tbody").innerHTML += '<tr id="fila' + (i.toString()) + '"></tr>';
-
-        for (var j = 0; j < 8; j++) {
-
-            casilla = i.toString() + j.toString();
-
-            if ((i + j) % 2 == 0) {
-
-                document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaBlanca" onclick="intentarMovimiento(' + casilla + ')"></td>';
-
-            }
-            else {
-
-                document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaNegra" onclick="intentarMovimiento(' + casilla + ')"></td>';
-
-            }
-        }
-    }
-
-    llenarMatriz();
 
 }
 
