@@ -5,6 +5,11 @@ var casillaFichaEnMedio = '';
 var turnoRojo = true;
 var laFichaVieneDeMatar = false;
 
+// GENERALIZACIÓN DEL MOVIMIENTO -> [0] = AbajoDerecha, [1] = AbajoIzquierda, [2] = ArribaIzquierda, [3] = ArribaDerecha
+
+var sentidoFila = [1, 1, -1, -1];
+var sentidoColumna = [1, -1, -1, 1];
+
 var audioMoverFicha = new Audio("sonido/moverFicha.mp3");
 var audioMatarFicha = new Audio("sonido/matarFicha.mp3");
 var audioMatarUltima = new Audio("sonido/checkmate.mp3");
@@ -99,7 +104,7 @@ function casillaEstaDisponible(casilla) { // Verifica si una casilla está vací
 
 function intentarMovimiento(casilla) { // Revisa si la casilla es verde y se encarga del movimiento
 
-    
+
     if (parseInt(casilla) < 10) casilla = "0" + casilla;
 
     if (document.getElementById(casilla).style.background == "green") {
@@ -108,6 +113,15 @@ function intentarMovimiento(casilla) { // Revisa si la casilla es verde y se enc
         pasarTurno();
     }
     else if (document.getElementById(casilla).style.background == "lime") {
+
+        var id = fichaSeleccionada;
+
+        var filaOrigen = parseInt(posicion(id).substr(0, 1));
+        var columnaOrigen = parseInt(posicion(id).substr(1, 1));
+        var filaDestino = parseInt(casilla.toString().substr(0,1));
+        var columnaDestino = parseInt(casilla.toString().substr(1,1));
+
+        casillaFichaEnMedio = (((filaOrigen + ((filaDestino - filaOrigen) / 2)).toString()) + ((columnaOrigen + ((columnaDestino - columnaOrigen) / 2)).toString()));
 
         audioMatarFicha.play();
         moverFicha(fichaSeleccionada, casilla.toString().substr(0, 1), casilla.toString().substr(1, 1));
@@ -134,9 +148,9 @@ function revisarSiPasaTurno() { // Busca si hay celdas color "lime", si no hay p
     }
 }
 
-function pasarTurno(){
+function pasarTurno() {
     turnoRojo = !turnoRojo;
-    switch(turnoRojo){
+    switch (turnoRojo) {
         case true:
             document.getElementById("texto").innerHTML = "Es turno de las fichas rojas";
             break;
@@ -164,9 +178,7 @@ function clickFicha(idFicha) { // Funcion de movimiento principal
 
     if (color == turno) { // SI LA FICHA A LA QUE SE LE DIO CLICK ESTÁ EN SU TURNO
 
-        // GENERALIZACIÓN DEL MOVIMIENTO -> [0] = AbajoDerecha, [1] = AbajoIzquierda, [2] = ArribaIzquierda, [3] = ArribaDerecha
-        var sentidoFila     = [1, 1, -1, -1];
-        var sentidoColumna  = [1, -1, -1, 1];
+        
 
         var filaOrigen = posicion(id).substr(0, 1);
         var columnaOrigen = posicion(id).substr(1, 1);
@@ -187,7 +199,7 @@ function clickFicha(idFicha) { // Funcion de movimiento principal
                 if ((color == "a" && sentidoFila[i] == -1) || (color == "r" && sentidoFila[i] == 1) || (id.substr(3, 1) == "c")) {
 
                     if (casillaEstaDisponible(casillaIntento)) {
-                        if(laFichaVieneDeMatar == false){
+                        if (laFichaVieneDeMatar == false) {
                             document.getElementById(casillaIntento).style.background = "green";
                         }
                     }
@@ -201,7 +213,7 @@ function clickFicha(idFicha) { // Funcion de movimiento principal
                             if (validarCasilla(casillaIntento)) {
                                 if (casillaEstaDisponible(casillaIntento)) {
                                     document.getElementById(casillaIntento).style.background = "lime";
-                                    casillaFichaEnMedio = (filaOrigen + (1 * sentidoFila[i])).toString() + (columnaOrigen + (1 * sentidoColumna[i])).toString();
+
 
                                 }
                             }
