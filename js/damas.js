@@ -52,24 +52,15 @@ function dibujarTablero() { // Dibujo inicial del tablero
     var casilla = '';
 
     document.getElementById("Ajedrez").innerHTML += '<tbody id="tbody"></tbody>';
-
     for (var i = 0; i < 8; i++) {
-
         document.getElementById("tbody").innerHTML += '<tr id="fila' + (i.toString()) + '"></tr>';
-
         for (var j = 0; j < 8; j++) {
-
             casilla = i.toString() + j.toString();
-
             if ((i + j) % 2 == 0) {
-
                 document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaBlanca" onclick="intentarMovimiento(' + casilla + ')"></td>';
-
             }
             else {
-
                 document.getElementById("fila" + i.toString()).innerHTML += '<td id="' + casilla + '" class = "casillaNegra" onclick="intentarMovimiento(' + casilla + ')"></td>';
-
             }
         }
     }
@@ -103,7 +94,6 @@ function casillaEstaDisponible(casilla) { // Verifica si una casilla está vací
 }
 
 function intentarMovimiento(casilla) { // Revisa si la casilla es verde y se encarga del movimiento
-
 
     if (parseInt(casilla) < 10) casilla = "0" + casilla;
 
